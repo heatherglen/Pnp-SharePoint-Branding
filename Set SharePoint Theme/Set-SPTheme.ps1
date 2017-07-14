@@ -1,4 +1,4 @@
-﻿<#
+<#
 .REQUIREMENTS
 Requires PnP-PowerShell version 2.7.1609.3 or later
 https://github.com/OfficeDev/PnP-PowerShell/releasess
@@ -57,16 +57,16 @@ Write-Host ""
 
 try
 {
-	Connect-SPOnline $targetSiteUrl -Credentials $Credentials
+	Connect-PnPOnline $targetSiteUrl -Credentials $Credentials
 
 	Write-Host -ForegroundColor White "Provisioning asset files to $($targetSiteUrl)"
-	Apply-SPOProvisioningTemplate -Path .\Custom.SPTheme.Infrastructure.xml -Handlers Files
+	Apply-PnPProvisioningTemplate -Path .\Custom.SPTheme.Infrastructure.xml -Handlers Files
 
 	#If the asset and target locations are different, then open up the target web now
 	if($targetSiteUrl -ne $targetWebUrl)
 	{	
-		Disconnect-SPOnline
-		Connect-SPOnline $targetWebUrl -Credentials $Credentials
+		Disconnect-PnPOnline
+		Connect-PnPOnline $targetWebUrl -Credentials $Credentials
 	}
 
 	$rootPath = $targetSiteUrl.Substring($targetSiteUrl.IndexOf('/',8))
@@ -76,7 +76,7 @@ try
 	Write-Host -ForegroundColor White "Setting composed look for $($targetWebUrl)"
 
 	#https://github.com/OfficeDev/PnP-PowerShell/blob/master/Documentation/SetSPOTheme.md
-	Set-SPOTheme -ColorPaletteUrl $colorPaletteUrl -BackgroundImageUrl $bgImageUrl
+	Set-PnPTheme -ColorPaletteUrl $colorPaletteUrl -BackgroundImageUrl $bgImageUrl
 
 	#now set the master page
 	$webRootPath = $targetWebUrl.Substring($targetWebUrl.IndexOf('/',8))
@@ -84,7 +84,7 @@ try
 	Write-Host -ForegroundColor White "Setting master page to $($masterUrl)"
 
     #https://github.com/OfficeDev/PnP-PowerShell/blob/master/Documentation/SetSPOWeb.md
-	Set-SPOWeb -MasterUrl $masterUrl
+	Set-PnPWeb -MasterUrl $masterUrl
 
 	Write-Host ""
 	Write-Host -ForegroundColor Green "Composed Look applied"
